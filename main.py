@@ -5,25 +5,27 @@ import numpy as np
 from imutils.object_detection import non_max_suppression
 import matplotlib.pyplot as plt
 
-image_path = "images/img.png"
+image_path = "images/img_2.png"
 winStride = (1, 1)
 padding = (8, 8)
 scale = 1.01
-# meanShift = True if args["mean_shift"] > 0 else False
 
 # initialize the HOG descriptor/person detector
 hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
+a= cv2.HOGDescriptor_getDefaultPeopleDetector()
 # load the image and resize it
 image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
 image = imutils.resize(image, width=min(400, image.shape[1]))
 
-
 # detect people in the image
-
+start = datetime.datetime.now()
 (rects, weights) = hog.detectMultiScale(image, winStride=winStride,
 	padding=padding, scale=scale)
+end = datetime.datetime.now()
+
+print("Total seconds = " + str((end-start).total_seconds()))
 
 rects = np.array([[x, y, x + w, y + h] for (x, y, w, h) in rects])
 pick = non_max_suppression(rects, probs=None, overlapThresh=0.65)
